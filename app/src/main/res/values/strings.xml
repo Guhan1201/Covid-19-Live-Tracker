@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">Covid-19_LiveTracker</string>
+    <string name="app_name">COVID19 Notifier 🇮🇳</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="active">Active</string>
+    <string name="recovered">Recovered</string>
+    <string name="deaths">Deaths</string>
+    <string name="default_notification_channel_id">default</string>
+    <string name="text_confirmed_cases">Confirmed Cases : %s</string>
+    <string name="text_last_updated">Last Updated : %s</string>
+    <string name="default_notification_channel_name">Covid-19 India</string>
+    <string name="menu_ui_mode">Dark Mode</string>
+
 </resources>

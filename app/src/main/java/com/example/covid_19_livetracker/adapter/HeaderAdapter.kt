@@ -1,0 +1,79 @@
+package com.example.covid_19_livetracker.adapter
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.covid_19_livetracker.databinding.ItemTotalBinding
+import com.example.covid_19_livetracker.model.Details
+
+class HeaderAdapter : ListAdapter<Details, HeaderAdapter.TotalViewHolder>(
+    DIFF_CALLBACK
+) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        TotalViewHolder(
+            ItemTotalBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
+
+    override fun onBindViewHolder(holder: TotalViewHolder, position: Int) =
+        holder.bind(getItem(position))
+
+
+    class TotalViewHolder(private val binding: ItemTotalBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(details: Details) {
+            binding.textConfirmed.text = details.confirmed
+            binding.textActive.text = details.active
+            binding.textRecovered.text = details.recovered
+            binding.textDeceased.text = details.deaths
+
+            // New Confirmed
+            details.deltaConfirmed.let {
+                if (it == "0") {
+                    binding.groupNewConfirmed.visibility = View.GONE
+                } else {
+                    binding.groupNewConfirmed.visibility = View.VISIBLE
+                    binding.textNewConfirmed.text = details.deltaConfirmed
+                }
+            }
+
+            // New Recovered
+            details.deltaRecovered.let {
+                if (it == "0") {
+                    binding.groupNewRecovered.visibility = View.GONE
+                } else {
+                    binding.groupNewRecovered.visibility = View.VISIBLE
+                    binding.textNewRecovered.text = details.deltaRecovered
+                }
+            }
+
+            // New Deaths
+            details.deltaDeaths.let {
+                if (it == "0") {
+                    binding.groupNewDeaths.visibility = View.GONE
+                } else {
+                    binding.groupNewDeaths.visibility = View.VISIBLE
+                    binding.textNewDeaths.text = details.deltaDeaths
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Details>() {
+            override fun areItemsTheSame(oldItem: Details, newItem: Details): Boolean =
+                oldItem.state == newItem.state
+
+            override fun areContentsTheSame(oldItem: Details, newItem: Details): Boolean =
+                oldItem == newItem
+
+        }
+    }
+}
