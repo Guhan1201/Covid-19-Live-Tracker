@@ -24,7 +24,7 @@ class ListViewModel : ViewModel() {
         getData()
     }
 
-    private fun getData() {
+    fun getData() {
         disposable.add(apiRepository.getData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

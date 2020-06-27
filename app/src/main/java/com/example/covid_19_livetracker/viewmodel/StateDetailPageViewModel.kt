@@ -14,8 +14,8 @@ class StateDetailPageViewModel : ViewModel() {
 
     val apiRepository = ApiRepository()
 
-    private var _stateResponse = MutableLiveData<List<StateDetailsResponse>>()
-    val stateResponse : LiveData<List<StateDetailsResponse>> = _stateResponse
+    private var _stateResponse = MutableLiveData<StateDetailsResponse>()
+    val stateResponse : LiveData<StateDetailsResponse> = _stateResponse
     private var _loading = MutableLiveData<Boolean>()
     val loading : LiveData<Boolean> = _loading
     private val disposable : CompositeDisposable = CompositeDisposable()
@@ -32,9 +32,9 @@ class StateDetailPageViewModel : ViewModel() {
               _loading.value = false
           }
           .subscribe({
-              _stateResponse.value = it
-              Log.e("HAHAHAAH",it.toString())
-              Log.e("HAHAAHAH",it.size.toString())
+              val data = it.find { it.state == state }
+              _stateResponse.value = data
+
           },{
               Log.e("HAAHAHAHAHHA",it.toString())
           }))

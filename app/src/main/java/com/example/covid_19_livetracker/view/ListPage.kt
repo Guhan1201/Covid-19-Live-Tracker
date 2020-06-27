@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.MergeAdapter
-import com.example.covid_19_livetracker.TestActivity
 import com.example.covid_19_livetracker.adapter.HeaderAdapter
 import com.example.covid_19_livetracker.adapter.ItemAdapter
 import com.example.covid_19_livetracker.databinding.ActivityMainBinding
@@ -29,6 +28,7 @@ class ListPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+     //   setSupportActionBar(binding.appBarlayout.toolbar)
 
         headerAdapter = HeaderAdapter()
         itemAdapter = ItemAdapter(this::goToDetailPage)
@@ -42,6 +42,12 @@ class ListPage : AppCompatActivity() {
                 itemAdapter.submitList(it.stateWiseDetails.subList(1, it.stateWiseDetails.size))
 
             })
+            loading.observe(this@ListPage, Observer {
+                binding.swipeRefreshLayout.isRefreshing = it
+            })
+        }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getData()
         }
     }
 
@@ -57,7 +63,7 @@ class ListPage : AppCompatActivity() {
     }
 
     private fun goToDetailPage(details: Details) {
-        startActivity(Intent(this, TestActivity::class.java).apply {
+        startActivity(Intent(this, StateDetailActivity::class.java).apply {
             putExtra(
                 KEY_STATE_DETAILS,
                 details
