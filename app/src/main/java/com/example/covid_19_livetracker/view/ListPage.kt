@@ -1,11 +1,17 @@
 package com.example.covid_19_livetracker.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.graphics.drawable.DrawableCompat.applyTheme
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.MergeAdapter
+import androidx.work.*
+import com.example.covid_19_livetracker.NotificationWorker
 import com.example.covid_19_livetracker.adapter.HeaderAdapter
 import com.example.covid_19_livetracker.adapter.ItemAdapter
 import com.example.covid_19_livetracker.databinding.ActivityMainBinding
@@ -13,6 +19,7 @@ import com.example.covid_19_livetracker.model.Details
 import com.example.covid_19_livetracker.viewmodel.ListViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.TimeUnit
 
 class ListPage : AppCompatActivity() {
     private lateinit var viewModel: ListViewModel
@@ -28,7 +35,9 @@ class ListPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-     //   setSupportActionBar(binding.appBarlayout.toolbar)
+        initWorker()
+
+        setSupportActionBar(binding.appBarlayout.toolbar)
 
         headerAdapter = HeaderAdapter()
         itemAdapter = ItemAdapter(this::goToDetailPage)
@@ -62,6 +71,7 @@ class ListPage : AppCompatActivity() {
         backPressedTime = System.currentTimeMillis()
     }
 
+
     private fun goToDetailPage(details: Details) {
         startActivity(Intent(this, StateDetailActivity::class.java).apply {
             putExtra(
@@ -71,7 +81,29 @@ class ListPage : AppCompatActivity() {
         })
     }
 
+    private fun initWorker() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        /*
+         * for test change MINUTES
+         *
+         */
+        val notificationWorkRequest =
+            PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            JOB_TAG,
+            ExistingPeriodicWorkPolicy.KEEP,
+            notificationWorkRequest
+        )
+    }
+
     companion object {
+        const val JOB_TAG = "notificationWorkTag"
         const val KEY_STATE_DETAILS = "KEY_STATE_DETAILS"
     }
 
