@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.graphics.drawable.DrawableCompat.applyTheme
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.MergeAdapter
@@ -20,6 +19,9 @@ import com.example.covid_19_livetracker.viewmodel.ListViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
+import com.example.covid_19_livetracker.R
+import com.example.covid_19_livetracker.utils.applyTheme
+import com.example.covid_19_livetracker.utils.isDarkTheme
 
 class ListPage : AppCompatActivity() {
     private lateinit var viewModel: ListViewModel
@@ -60,6 +62,11 @@ class ListPage : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
     override fun onBackPressed() {
         if (backPressedTime + 2000 > System.currentTimeMillis()) {
             backSnackBar.dismiss()
@@ -79,7 +86,26 @@ class ListPage : AppCompatActivity() {
                 details
             )
         })
+
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_uimode -> {
+                (if (isDarkTheme()) {
+                    AppCompatDelegate.MODE_NIGHT_NO
+                } else {
+                    AppCompatDelegate.MODE_NIGHT_YES
+                }).also {
+                    applyTheme(it)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    }
+
 
     private fun initWorker() {
         val constraints = Constraints.Builder()
@@ -91,7 +117,7 @@ class ListPage : AppCompatActivity() {
          *
          */
         val notificationWorkRequest =
-            PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.HOURS)
+            PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.MINUTES)
                 .setConstraints(constraints)
                 .build()
 

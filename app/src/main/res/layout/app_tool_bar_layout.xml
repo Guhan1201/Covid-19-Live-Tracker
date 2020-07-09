@@ -15,6 +15,7 @@
         app:layout_scrollFlags="scroll|snap|enterAlways"
         app:subtitleTextAppearance="@style/ToolBarSubtitle"
         app:title="@string/app_name"
+        app:menu="@menu/toolbar_menu"
         app:titleTextColor="@color/color_toolbar_title">
     </androidx.appcompat.widget.Toolbar>
 </com.google.android.material.appbar.AppBarLayout>

@@ -66,12 +66,10 @@ class NotificationWorker(
 
     override suspend fun doWork(): Result = coroutineScope {
         Log.d(javaClass.simpleName, "Worker Started!")
-        var sucess = false
         val repository = ApiRepository()
 
         withContext(Dispatchers.Default) {
             repository.getData()
-                .retry()
                 .subscribe({
                     val totalDetails = it.stateWiseDetails[0]
                     showNotification(
@@ -80,18 +78,15 @@ class NotificationWorker(
                             totalDetails.lastUpdatedTime.toDateFormat()
                         )
                     )
-                    sucess = true
                     Log.d(javaClass.simpleName, "Notification Displayed!")
                     Log.d(javaClass.simpleName, "Work Succeed...")
                 }, {
-                    sucess = false
-                    Result.retry()
                     Log.d(javaClass.simpleName, "Notification Api call failed!")
+                    Result.retry()
                 })
         }
-
-
-        Result.retry()
+        Log.d(javaClass.simpleName, "Worker Ended!")
+        Result.success()
     }
 }
 

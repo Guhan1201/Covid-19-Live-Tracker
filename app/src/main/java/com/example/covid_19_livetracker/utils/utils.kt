@@ -1,6 +1,9 @@
 package com.example.covid_19_livetracker.utils
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -32,4 +35,16 @@ fun getPeriod(past: Date): String {
 fun String.toDateFormat(): Date {
     return SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         .parse(this)
+}
+
+fun applyTheme(theme: Int) {
+    AppCompatDelegate.setDefaultNightMode(theme)
+}
+
+/**
+ * Returns if currently dark theme is active or not.
+ */
+fun AppCompatActivity.isDarkTheme(): Boolean {
+    return (resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
 }
