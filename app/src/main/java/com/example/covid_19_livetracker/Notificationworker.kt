@@ -82,7 +82,6 @@ class NotificationWorker(
                     Log.d(javaClass.simpleName, "Work Succeed...")
                 }, {
                     Log.d(javaClass.simpleName, "Notification Api call failed!")
-                    Result.retry()
                 })
         }
         Log.d(javaClass.simpleName, "Worker Ended!")

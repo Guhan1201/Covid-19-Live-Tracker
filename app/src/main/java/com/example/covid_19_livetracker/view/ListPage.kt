@@ -1,5 +1,6 @@
 package com.example.covid_19_livetracker.view
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -38,7 +39,7 @@ class ListPage : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initWorker()
-
+        initDarkTheme()
         setSupportActionBar(binding.appBarlayout.toolbar)
 
         headerAdapter = HeaderAdapter()
@@ -59,6 +60,13 @@ class ListPage : AppCompatActivity() {
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.getData()
+        }
+    }
+
+    private fun initDarkTheme() {
+        val sharedPreferences = this.getPreferences(Context.MODE_PRIVATE)
+        sharedPreferences.getInt("haha", AppCompatDelegate.MODE_NIGHT_NO).apply {
+            applyTheme(this)
         }
     }
 
@@ -90,6 +98,8 @@ class ListPage : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
         return when (item.itemId) {
             R.id.menu_uimode -> {
                 (if (isDarkTheme()) {
@@ -97,6 +107,10 @@ class ListPage : AppCompatActivity() {
                 } else {
                     AppCompatDelegate.MODE_NIGHT_YES
                 }).also {
+                    with(sharedPref.edit()) {
+                        putInt("haha", it)
+                        commit()
+                    }
                     applyTheme(it)
                 }
                 true
